@@ -220,3 +220,18 @@ probability = model.predict_proba(session_data)[0][1]
 
 print(f"Purchase Intent: {prediction} | Conversion Probability: {probability:.2%}")
 # Output: Purchase Intent: True | Conversion Probability: 78.40%
+
+---
+
+## 🌐 Live Web Application & Interactive Demo
+
+The trained inference pipeline has been deployed as a production-grade web application on **Streamlit Community Cloud**. You can explore and test real-time purchase predictions directly in your browser without running any local code.
+
+🔗 **Access the Live Web App:**  
+👉 **[https://onlineshoppersintention.streamlit.app](https://onlineshoppersintention.streamlit.app)**
+
+### ⚡ Key Features of the Live Application:
+* **Real-Time Machine Learning Inference:** Input custom session metrics (page counts, duration, analytics indicators, and technical profiles) to get immediate purchase intention predictions.
+* **Conversion Probability Metrics:** Displays the model's confidence score alongside a dynamic visual progress indicator.
+* **Key Session Drivers Analysis:** Highlights decisive signals influencing the prediction (e.g., `PageValues`, visitor type, and product engagement time).
+* **Cross-Platform & Cloud Hosted:** Accessible on both desktop and mobile devices with zero local dependencies required.
