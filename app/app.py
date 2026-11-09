@@ -110,24 +110,31 @@ st.markdown(
 # ==========================================
 # 2. Model Loading & Inference Pipeline
 # ==========================================
-MODEL_FILE = "shopping_intention_model.joblib"
+possible_paths = [
+    "shopping_intention_model.joblib",
+    "model/shopping_intention_model.joblib",
+    os.path.join(os.path.dirname(__file__), "shopping_intention_model.joblib"),
+    os.path.join(os.path.dirname(__file__), "..", "model", "shopping_intention_model.joblib"),
+    os.path.join(os.path.dirname(__file__), "..", "shopping_intention_model.joblib"),
+    os.path.join(os.path.dirname(__file__), "model", "shopping_intention_model.joblib"),
+]
 
+MODEL_FILE = None
+for p in possible_paths:
+    if os.path.exists(p):
+        MODEL_FILE = p
+        break
 
 @st.cache_resource
 def load_trained_model():
     """Loads the pre-trained Scikit-Learn Pipeline from disk."""
-    if os.path.exists(MODEL_FILE):
+    if MODEL_FILE:
         try:
             loaded = joblib.load(MODEL_FILE)
             return loaded, None
         except Exception as e:
-            return None, f"Error loading model binary: {str(e)}"
-    else:
-        return (
-            None,
-            f"Model file '{MODEL_FILE}' not found in the root directory. Running in simulation mode.",
-        )
-
+            return None, str(e)
+    return None, None
 
 model, model_error = load_trained_model()
 
@@ -148,9 +155,7 @@ def run_prediction(data: Dict[str, Any]) -> Tuple[bool, float]:
         "PageValues",
         "SpecialDay",
         "OperatingSystems",
-        "Browser"
-
-,
+        "Browser",
         "Region",
         "TrafficType",
     ]
@@ -166,12 +171,10 @@ def run_prediction(data: Dict[str, Any]) -> Tuple[bool, float]:
         probability = float(model.predict_proba(df_single)[0][1])
         return prediction, probability
     else:
-        # Fallback simulation logic if model file is missing
         pv = float(data.get("PageValues", 0.0))
         prob = min(0.95, max(0.05, (pv * 0.04) + 0.12))
         return prob > 0.5, prob
-
-
+    
 # ==========================================
 # 3. Application Header
 # ==========================================
@@ -185,8 +188,8 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-if model_error:
-    st.warning(f"⚠️ {model_error}")
+#if model_error:
+#    st.warning(f"⚠️ {model_error}")
 
 # ==========================================
 # 4. Input Form
